@@ -1,0 +1,65 @@
+#!/bin/bash
+
+# -----------------------------
+# Load environment variables safely from .env.local
+# -----------------------------
+if [ -f ".env.local" ]; then
+  set -a  # automatically export all variables
+  # Only read valid KEY=VALUE lines
+  grep -E '^[A-Za-z_][A-Za-z0-9_]*=.*' .env.local > .env.tmp
+  source .env.tmp
+  rm .env.tmp
+  set +a
+fi
+
+# Check if API key exists
+if [ -z "$GOOGLE_API_KEY" ]; then
+  echo "GOOGLE_API_KEY not found in .env.local"
+  exit 1
+fi
+
+# -----------------------------
+# Create output folder
+# -----------------------------
+OUTPUT_DIR="public/videostyle"
+mkdir -p "$OUTPUT_DIR"
+
+# -----------------------------
+# Prompts for each style
+# -----------------------------
+declare -A prompts=(
+  ["Realistic"]="A hyper-realistic, cinematic photograph of a bustling city street at sunset, with wet reflective pavements, people in motion, diverse vehicles, streetlights casting dynamic shadows, and warm golden-hour lighting"
+  ["Cinematic"]="An epic, cinematic scene of a lone hero on a cliff overlooking a sprawling valley, with dramatic clouds, golden sunlight breaking through, lens flares, misty mountains, and a sense of grandeur and tension"
+  ["Cartoon"]="A vibrant, whimsical cartoon park scene filled with joyful characters, playful animals, oversized flowers, colorful playgrounds, and exaggerated perspectives in a cheerful, animated style"
+  ["Watercolor"]="A delicate watercolor painting of a tranquil lakeside at dawn, with misty mountains, gentle ripples on the water, soft pastel reflections, and subtle, flowing brush strokes capturing serenity and calm"
+  ["Cyberpunk"]="A neon-drenched cyberpunk metropolis at night, with futuristic skyscrapers, flying cars, holographic billboards, rain-soaked streets reflecting neon lights, and a dense, immersive dystopian atmosphere"
+  ["GTA"]="A high-energy Grand Theft Auto-style urban scene, with detailed characters engaged in action, dynamic vehicles, gritty city buildings, dramatic lighting, and cinematic tension in a stylized realistic aesthetic"
+  ["Fantasy"]="A magical fantasy forest illuminated by glowing mushrooms and ethereal lights, with mystical creatures, towering trees, mist, and a dreamlike, otherworldly atmosphere"
+  ["Sci-Fi"]="A futuristic sci-fi spaceport on an alien planet, with towering spacecraft, alien architecture, bustling robotic workers, neon holograms, and a sense of advanced technology and interstellar adventure"
+)
+
+# -----------------------------
+# Generate images one by one
+# -----------------------------
+for style in "${!prompts[@]}"; do
+  echo "Generating $style image..."
+  
+  curl -s -X POST "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-preview-image-generation:generateContent" \
+    -H "x-goog-api-key: $GOOGLE_API_KEY" \
+    -H "Content-Type: application/json" \
+    -d "{
+      \"contents\": [{
+        \"parts\": [
+          {\"text\": \"${prompts[$style]}\"}
+        ]
+      }],
+      \"generationConfig\":{\"responseModalities\":[\"TEXT\",\"IMAGE\"]}
+    }" \
+    | grep -o '"data": "[^"]*"' \
+    | cut -d'"' -f4 \
+    | base64 --decode > "$OUTPUT_DIR/${style}.png"
+
+  echo "$style image saved as $OUTPUT_DIR/${style}.png"
+done
+
+echo "All images generated in $OUTPUT_DIR"

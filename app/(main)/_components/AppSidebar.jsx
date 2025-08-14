@@ -64,7 +64,7 @@ function AppSidebar() {
         <div>
           <div className="flex items-center gap-2 w-full justify-center mt-5">
             <Image src={'/logo.png'} alt="logo"
-              width={40} height={40}
+              width={40} height={40} className="w-auto h-auto"
             />
             <h2 className="font-bold text-2xl">VidAI Studio</h2>
             <Badge variant="outline" className="text-yellow-600 border-yellow-400 bg-yellow-400/10">

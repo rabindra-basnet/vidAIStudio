@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { ThemeProvider as NextThemesProvider } from 'next-themes'
 import { AuthContext } from '@/app/_context/AuthContext'
 import { onAuthStateChanged } from 'firebase/auth'
-import { auth } from '@/configs/firebaseConifgs'
+import { auth } from '@/configs/FirebaseConifgs'
 import { useMutation } from 'convex/react'
 import { api } from '@/convex/_generated/api'
 

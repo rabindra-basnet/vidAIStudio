@@ -6,7 +6,7 @@ import Auth from './Auth'
 import { ModeToggle } from '@/components/toggle-theme'
 import Link from 'next/link'
 import { signOut } from 'firebase/auth'
-import { auth } from '@/configs/firebaseConifgs'
+import { auth } from '@/configs/FirebaseConifgs'
 import { useAuthContext } from '../provider'
 
 const Header = () => {
