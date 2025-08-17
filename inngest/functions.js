@@ -64,7 +64,7 @@ export const GenerateVideoData = inngest.createFunction(
             }
         )
 
-        // TODO: Generate images using AI
+        // // TODO: Generate images using AI
         const GenerateImages = await step.run(
             "GenerateImagesFromImagePrompts",
             async () => {
@@ -80,6 +80,47 @@ export const GenerateVideoData = inngest.createFunction(
                 return images;
             }
         )
+        // const BASE_URL = 'https://aigurulab.tech';
+
+        // // Replace your step function with this
+        // const GenerateImages = await step.run(
+        //     "GenerateImagesFromImagePrompts",
+        //     async () => {
+        //         // Generate all images concurrently
+        //         const images = await Promise.all(
+        //             GenerateImagePrompts.map(async (item) => {
+        //                 try {
+        //                     const result = await axios.post(
+        //                         BASE_URL + '/api/generate-image',
+        //                         {
+        //                             width: 1024,
+        //                             height: 1024,
+        //                             input: item.imagePrompt,
+        //                             model: 'sdxl', // or 'flux'
+        //                             aspectRatio: "1:1", // Only for Flux model
+        //                         },
+        //                         {
+        //                             headers: {
+        //                                 'x-api-key': "5aab654c-2d33-4952-a416-acd7f96be99d",
+        //                                 'Content-Type': 'application/json',
+        //                             },
+        //                         }
+        //                     );
+
+        //                     if (!result?.data?.image) throw new Error("Image generation failed.");
+        //                     return result.data.image; // Base64 image
+        //                 } catch (err) {
+        //                     console.error("Error generating image for prompt:", item.imagePrompt, err);
+        //                     throw err;
+        //                 }
+        //             })
+        //         );
+
+        //         console.log("Generated Images:", images);
+        //         return images;
+        //     }
+        // );
+
         // TODO: Save all data to DB
         const UpdateDB = await step.run(
             "UpdateDB",
@@ -91,8 +132,8 @@ export const GenerateVideoData = inngest.createFunction(
                     captionJson: GenerateCaptions,
                     images: GenerateImages,
                 });
-
-                if (!result) throw new Error("DB update failed.");
+                console.log(result);
+                // if (!result) throw new Error("DB update failed.");
 
                 return result;
             }

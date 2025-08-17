@@ -1,26 +1,35 @@
 "use client"
 import React, { useContext, useEffect, useState } from 'react'
-import { ThemeProvider as NextThemesProvider } from 'next-themes'
 import { AuthContext } from '@/app/_context/AuthContext'
 import { onAuthStateChanged } from 'firebase/auth'
 import { auth } from '@/configs/FirebaseConifgs'
 import { useMutation } from 'convex/react'
 import { api } from '@/convex/_generated/api'
+import { useRouter } from 'next/navigation'
 
 const Provider = ({ children }) => {
-
+    const router = useRouter()
     const [user, setUser] = useState(null)
     const CreateUser = useMutation(api.users.CreateNewUSer)
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
-            const result = await CreateUser({
-                name: user?.displayName,
-                email: user?.email,
-                pictureURL: user?.photoURL
+            if (user) {
+                const result = await CreateUser({
+                    name: user?.displayName,
+                    email: user?.email,
+                    pictureURL: user?.photoURL
 
-            })
-            console.log("Convex user:", result);
-            setUser(result)
+                })
+                console.log("Convex user:", result);
+                setUser(result)
+
+                // User logged in
+                router.replace("/dashboard")
+            }
+            else {
+                // User logged out
+                setUser(null)
+            }
         })
         return () => unsubscribe()
     }, [])
@@ -33,8 +42,6 @@ const Provider = ({ children }) => {
     )
 }
 
-export const useAuthContext = () => {
-    const ctx = useContext(AuthContext);
-    return ctx
-}
+export const useAuthContext = () => useContext(AuthContext)
+
 export default Provider

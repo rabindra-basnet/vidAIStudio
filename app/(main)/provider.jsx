@@ -11,7 +11,7 @@ const DashboardProvider = ({ children }) => {
   const router = useRouter();
   useEffect(() => {
     user && CheckUserAuthenticated;
-  }, []);
+  }, [user]);
 
   const CheckUserAuthenticated = () => {
     if (!user) {

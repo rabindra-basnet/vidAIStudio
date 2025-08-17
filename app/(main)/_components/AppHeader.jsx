@@ -1,6 +1,6 @@
 "use client"
 import { useAuthContext } from '@/app/provider'
-import { ModeToggle } from '@/components/toggle-theme'
+import { ModeToggle } from '@/app/_components/toggle-theme'
 import { SidebarTrigger } from '@/components/ui/sidebar'
 import Image from 'next/image'
 import React from 'react'

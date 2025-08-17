@@ -1,0 +1,62 @@
+
+#!/bin/bash
+
+# -----------------------------
+# Load environment variables safely from .env.local
+# -----------------------------
+if [ -f ".env.local" ]; then
+  set -a  # automatically export all variables
+  # Only read valid KEY=VALUE lines
+  grep -E '^[A-Za-z_][A-Za-z0-9_]*=.*' .env.local > .env.tmp
+  source .env.tmp
+  rm .env.tmp
+  set +a
+fi
+
+# Check if API key exists
+if [ -z "$GOOGLE_API_KEY" ]; then
+  echo "GOOGLE_API_KEY not found in .env.local"
+  exit 1
+fi
+
+# -----------------------------
+# Create output folder
+# -----------------------------
+OUTPUT_DIR="public/templates"
+mkdir -p "$OUTPUT_DIR"
+
+# -----------------------------
+# Prompts for each template (matching baseTemplates)
+# -----------------------------
+declare -A prompts=(
+  ["Cyberpunk_Neon"]="A futuristic cyberpunk city with neon lights, holographic advertisements, and flying cars in a dark atmospheric setting"
+  ["Medieval_Fantasy"]="An ancient medieval castle surrounded by mystical forests, dragons flying overhead, and magical glowing elements"
+  ["Vintage_Retro"]="Vintage 1950s aesthetic with classic cars, retro diners, and nostalgic color grading in warm tones"
+  ["Modern_Minimalist"]="Clean modern architecture with minimalist design, geometric shapes, and neutral color palette"
+)
+
+# -----------------------------
+# Generate images one by one
+# -----------------------------
+for style in "${!prompts[@]}"; do
+  echo "Generating $style image..."
+  
+  curl -s -X POST "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-preview-image-generation:generateContent" \
+    -H "x-goog-api-key: $GOOGLE_API_KEY" \
+    -H "Content-Type: application/json" \
+    -d "{
+      \"contents\": [{
+        \"parts\": [
+          {\"text\": \"${prompts[$style]}\"}
+        ]
+      }],
+      \"generationConfig\":{\"responseModalities\":[\"TEXT\",\"IMAGE\"]}
+    }" \
+    | grep -o '"data": "[^"]*"' \
+    | cut -d'"' -f4 \
+    | base64 --decode > "$OUTPUT_DIR/${style}.png"
+  
+  echo "$style image saved as $OUTPUT_DIR/${style}.png"
+done
+
+echo "All images generated in $OUTPUT_DIR"

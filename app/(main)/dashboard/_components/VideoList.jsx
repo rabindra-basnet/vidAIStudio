@@ -60,39 +60,42 @@ const VideoList = () => {
             You dont have any Video created. Create a new one{" "}
           </h2>
           <Link href={"/create-new-video"}>
-            <Button>Create New Video</Button>
+            <Button variant={"orange"}>Create New Video</Button>
           </Link>
         </div>
       ) : (
         <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-5 mt-10">
           {videoList?.map((video, index) => (
-            <div
-              // className="w-full relative aspect-[4/3] rounded-xl bg-gray-200 flex items-center justify-center overflow-hidden"
-              key={index}
-            >
-              {video?.status === "completed" ? (
-                video?.images && (
-                  <Image
-                    src={video?.images?.[0] || null}
-                    alt={video?.title}
-                    width={300}
-                    height={300}
-                    className="w-full object-cover rounded-xl aspect-auto"
-                  />
-                )
-              ) : (
-                <div className="w-full aspect-[2/3] rounded-xl bg-slate-400 flex items-center justify-center gap-2">
-                  <RefreshCcw className="animate-spin" />
-                  <h2>Generating...</h2>
+            <Link href={"/play-video/" + video?._id} key={index}>
+              <div className="relative w-full max-w-4xl h-[450px] mx-auto rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition cursor-pointer">
+                {video?.status === "completed" ? (
+                  video?.images && (
+                    <Image
+                      src={video?.images?.[0] || "/placeholder.png"}
+                      alt={video?.title}
+                      width={800}
+                      height={450}
+                      className="w-full h-full object-cover aspect-auto"
+                    />
+                  )
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center bg-slate-300">
+                    <RefreshCcw className="animate-spin text-gray-600" />
+                    <span className="ml-2 text-gray-600 font-semibold">
+                      Generating...
+                    </span>
+                  </div>
+                )}
+
+                {/* Footer with title and time */}
+                <div className="absolute bottom-0 w-full bg-gradient-to-t from-black/70 to-transparent p-5 text-white">
+                  <h2 className="text-2xl font-bold">{video?.title}</h2>
+                  <p className="text-sm">
+                    {moment(video?._creationTime).fromNow()}
+                  </p>
                 </div>
-              )}
-              <div className="absolute  w-full bottom-5  px-5">
-                <h2>{video?.title}</h2>
-                <h2 className="text-sm">
-                  {moment(video?._creationTime).fromNow()}
-                </h2>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       )}

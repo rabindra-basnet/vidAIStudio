@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Loader2Icon, SparklesIcon } from "lucide-react";
 import axios from "axios";
 import { useAuthContext } from "@/app/provider";
+import { toast } from "sonner";
 
 const suggestion = [
   "Historic Story",

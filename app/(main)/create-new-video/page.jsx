@@ -12,6 +12,7 @@ import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { useAuthContext } from "@/app/provider";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 const requiredFields = [
   "script",
@@ -26,6 +27,8 @@ const CreateNewVideo = () => {
   const [formData, setFormData] = useState({});
   const scrollRef = useRef(null);
   const [loading, setLoading] = useState(false);
+   const router = useRouter();
+
 
   const CreateInitialVideoRecord = useMutation(api.videoData.CreateVideoData);
 
@@ -83,7 +86,11 @@ const CreateNewVideo = () => {
           result.error || "Video generation failed. Try again later."
         );
       } else {
-        toast.success("Video generation started successfully!");
+        // Redirect to dashboard after a short delay (so the toast is visible)
+        setTimeout(() => {
+          toast.success("Video generation started successfully!");
+          router.push("/dashboard");
+        }, 1000); // 1 second delay
         console.log("Job queued:", result);
       }
     } catch (error) {

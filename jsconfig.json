@@ -1,7 +1,8 @@
 {
   "compilerOptions": {
+    "baseUrl": ".",        // required for path aliases to work
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./*"]      // maps @/... to project root
     }
   }
 }

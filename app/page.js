@@ -1,16 +1,30 @@
-import React from 'react'
-import Header from './_components/Header'
-import Hero from './_components/Hero'
+import { ContactSection } from "./_pagecomponent/contact-section";
+import { CTASection } from "./_pagecomponent/cta-section";
+import { FAQSection } from "./_pagecomponent/faq-section";
+import { FeaturesSection } from "./_pagecomponent/features-section";
+import { Footer } from "./_pagecomponent/Footer";
+import { GalleryShowcase } from "./_pagecomponent/gallery-showcase";
+import { Header } from "./_pagecomponent/Header";
+import { HeroSection } from "./_pagecomponent/hero-section";
+import { PricingSection } from "./_pagecomponent/pricing-section";
+import { ProcessSteps } from "./_pagecomponent/process-steps";
+import { TestimonialsSection } from "./_pagecomponent/testimonials-section";
 
-const page = () => {
+
+export default function HomePage() {
   return (
-    <div className='md:px-16 lg:px-24 xl:px-36'>
-      {/* Header */}
+    <div className="min-h-screen bg-white">
       <Header />
-      <Hero />
-
+      <HeroSection />
+      <FeaturesSection />
+      <ProcessSteps />
+      <GalleryShowcase />
+      <TestimonialsSection />
+      <PricingSection />
+      <FAQSection />
+      <CTASection />
+      <ContactSection />
+      <Footer />
     </div>
   )
 }
-
-export default page

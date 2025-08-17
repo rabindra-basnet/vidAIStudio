@@ -22,6 +22,7 @@ const buttonVariants = cva(
         link: "text-primary underline-offset-4 hover:underline",
           orange:
           "bg-[#EFB034] text-[#5D4108] shadow-xs hover:bg-[#D29211] hover:active:bg-[#B57E0F] disabled:opacity-40 focus-visible:ring-[#EFB034]/20 dark:focus-visible:ring-[#EFB034]/40",
+          gradiant:"bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white font-semibold py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200",
       },
       size: {
         default: "h-9 px-4 py-2 has-[>svg]:px-3",

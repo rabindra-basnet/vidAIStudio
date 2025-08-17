@@ -1,5 +1,5 @@
-"use client"
-import React, { useContext } from "react"
+"use client";
+import React, { useContext } from "react";
 import {
   Sidebar,
   SidebarContent,
@@ -10,64 +10,95 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar"
-import Image from "next/image"
-import { Button } from "@/components/ui/button"
-import { Compass, File, Gem, HomeIcon, LucideFileVideo, Settings, WalletCards } from "lucide-react"
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { Badge } from "@/components/ui/badge"
-import { useAuthContext } from "@/app/provider"
+} from "@/components/ui/sidebar";
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import {
+  Compass,
+  File,
+  Gem,
+  HomeIcon,
+  LogOut,
+  LucideFileVideo,
+  PlusIcon,
+  Settings,
+  WalletCards,
+} from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { Badge } from "@/components/ui/badge";
+import { useAuthContext } from "@/app/provider";
+import { signOut } from "firebase/auth";
+import { auth } from "@/configs/FirebaseConifgs";
+import { useRouter } from "next/navigation";
+import { VidAIStudioLogo } from "@/components/VidAIStudioLogo";
 
-const options = "Pro"
+const options = "Pro";
 
 const MenuItems = [
   {
     title: "Dashboard",
     url: "/dashboard",
-    icon: HomeIcon
+    icon: HomeIcon,
   },
   {
-    title: "Generate Video ",
+    title: "Generate Video",
     url: "/create-new-video",
-    icon: LucideFileVideo
+    icon: LucideFileVideo,
   },
   {
     title: "My Projects",
     url: "/projects",
-    icon: File
+    icon: File,
   },
   {
     title: "Billing",
-    url: "#",
-    icon: WalletCards
+    url: "/billing",
+    icon: WalletCards,
   },
   {
     title: "AI Tools",
-    url: "#",
-    icon: Compass
+    url: "/ai-tools",
+    icon: Compass,
   },
   {
     title: "Settings",
-    url: "#",
-    icon: Settings
+    url: "/settings",
+    icon: Settings,
   },
-
-]
+];
 function AppSidebar() {
-  const path = usePathname()
-  const { user } = useAuthContext()
-  console.log(user)
+  const router = useRouter();
+  const path = usePathname();
+  const { user } = useAuthContext();
+  console.log(user);
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      router.replace("/");
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
+
   return (
     <Sidebar>
       <SidebarHeader>
         <div>
           <div className="flex items-center gap-2 w-full justify-center mt-5">
-            <Image src={'/logo.png'} alt="logo"
-              width={40} height={40} className="w-auto h-auto"
-            />
-            <h2 className="font-bold text-2xl">VidAI Studio</h2>
-            <Badge variant="outline" className="text-yellow-600 border-yellow-400 bg-yellow-400/10">
+            {/* <Image
+              src={"/logo.png"}
+              alt="logo"
+              width={40}
+              height={40}
+              className="w-auto h-auto"
+            /> */}
+            <VidAIStudioLogo />
+            <Badge
+              variant="outline"
+              className="text-yellow-600 border-yellow-400 bg-yellow-400/10"
+            >
               {options}
             </Badge>
           </div>
@@ -82,18 +113,31 @@ function AppSidebar() {
           <SidebarGroupContent>
             <div className="mx-3 mt-4">
               <Link href={"/create-new-video"}>
-                <Button className="w-full" variant={"orange"}>Create New Video</Button>
+                <Button className="w-full" variant={"gradiant"}>
+                  <PlusIcon />
+                  Create New Video
+                </Button>
               </Link>
             </div>
-            <SidebarMenu className="space-y-2 mt-6" >
+            <SidebarMenu className="space-y-2 mt-6">
               {MenuItems?.map((menu, index) => (
                 <SidebarMenuItem key={index}>
                   <SidebarMenuButton
                     isActive={path === menu?.url}
-                    className="w-full justify-start px-3 py-2.5 rounded-lg transition-all duration-200 hover:bg-sidebar-accent data-[active=true]:bg-sidebar-primary data-[active=true]:text-sidebar-primary-foreground"
+                    className={`
+          w-full justify-start px-3 py-2.5 rounded-lg transition-all duration-200 
+          flex items-center gap-3
+          hover:bg-[#EFB034]/20
+          data-[active=true]:bg-[#EFB034] 
+          data-[active=true]:text-[#5D4108] 
+          text-gray-700
+        `}
                     asChild
                   >
-                    <Link href={menu?.url} className="flex items-center gap-3 w-full">
+                    <Link
+                      href={menu?.url}
+                      className="flex items-center gap-3 w-full"
+                    >
                       <menu.icon className="w-5 h-5 flex-shrink-0 text-current" />
                       <span className="font-medium">{menu?.title}</span>
                     </Link>
@@ -104,17 +148,33 @@ function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-
       <SidebarFooter>
-        <div className="p-5 border rounded-lg mb-6 bg-gray-800">
+        <div className="mx-3 mb-6 p-4 border rounded-lg bg-gray-200">
           <div className="flex items-center justify-between">
             <Gem className="text-gray-400" />
-            <h2 className="text-gray-400">{user?.credits} Credits Left</h2>
+            {user?.credits >=0 && (
+              <h2 className="text-gray-400">{user?.credits} Credits Left</h2>
+            )}
           </div>
-          <Button className="w-full mt-3">Buy More Credits</Button>
+          <Link href="/billing">
+            <Button className="w-full mt-3 bg-[#EFB034] hover:bg-[#D29211] active:bg-[#B57E0F] text-[#5D4108] font-medium">
+              Buy More Credits
+            </Button>
+          </Link>
+        </div>
+
+        <div className="mx-3 mb-6">
+          <Button
+            onClick={handleLogout}
+            variant="secondary"
+            className="w-full border flex items-center justify-start gap-2 px-4 py-2 rounded-lg hover:bg-red-50 hover:text-red-600 transition-all duration-200"
+          >
+            <LogOut className="w-5 h-5" />
+            Log Out
+          </Button>
         </div>
       </SidebarFooter>
     </Sidebar>
-  )
+  );
 }
-export default AppSidebar
+export default AppSidebar;
