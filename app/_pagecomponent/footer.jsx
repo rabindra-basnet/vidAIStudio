@@ -100,7 +100,7 @@ export function Footer() {
           <div className="flex items-center space-x-2 mt-4 md:mt-0">
             <span className="text-gray-400 text-sm">Made with</span>
             <div className="flex items-center space-x-1">
-              <span className="text-blue-400 font-semibold">Visily</span>
+              <span className="text-blue-400 font-semibold">Passion</span>
             </div>
           </div>
         </div>
