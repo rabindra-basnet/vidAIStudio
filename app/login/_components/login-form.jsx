@@ -8,8 +8,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
-import { auth } from "@/configs/FirebaseConifgs";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useAuthContext } from "@/app/provider";

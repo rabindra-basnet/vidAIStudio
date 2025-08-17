@@ -2,7 +2,7 @@ import { ContactSection } from "./_pagecomponent/contact-section";
 import { CTASection } from "./_pagecomponent/cta-section";
 import { FAQSection } from "./_pagecomponent/faq-section";
 import { FeaturesSection } from "./_pagecomponent/features-section";
-import { Footer } from "./_pagecomponent/Footer";
+import { Footer } from "./_pagecomponent/footer";
 import { GalleryShowcase } from "./_pagecomponent/gallery-showcase";
 import { Header } from "./_pagecomponent/Header";
 import { HeroSection } from "./_pagecomponent/hero-section";
