@@ -1,7 +1,7 @@
 import Image from "next/image";
 import React, { useState } from "react";
 
-const options = [
+export const options = [
   { name: "Realistic", image: "/videostyle/Realistic.png" },
   { name: "Cinematic", image: "/videostyle/Cinematic.png" },
   { name: "Cartoon", image: "/videostyle/Cartoon.png" },
@@ -12,14 +12,24 @@ const options = [
   { name: "Sci-Fi", image: "/videostyle/Sci-Fi.png" },
 ];
 
-const VideoStyle = ({ onHandleInputChange }) => {
+const VideoStyle = ({ onHandleInputChange, isRequired, isMissing }) => {
   const [selectedStyle, setSelectedStyle] = useState();
 
   return (
     <div className="mt-5">
-      <h2 className="text-lg font-semibold mb-2">Video Styles</h2>
-      <p className="text-sm text-gray-400 mb-2">Select Video Style</p>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2">
+      <h2 className="text-lg font-semibold mb-2 flex items-center gap-1">
+        Video Styles {isRequired && <span className="text-red-500">*</span>}
+      </h2>
+      <p
+        className={`text-sm mb-2 ${
+          isMissing ? "text-red-500" : "text-gray-400"
+        }`}
+      >
+        {isMissing
+          ? "Please select a video style."
+          : `Selected Video Style: ${selectedStyle}`}
+      </p>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 ">
         {options.map((option, index) => {
           const isSelected = option.name === selectedStyle;
           return (
@@ -30,8 +40,8 @@ const VideoStyle = ({ onHandleInputChange }) => {
                 onHandleInputChange("videoStyle", option.name);
               }}
               className={`group relative cursor-pointer rounded-lg overflow-hidden transition-all ${
-                isSelected ? "ring-3 ring-blue-500" : ""
-              }`}
+                isSelected ? "ring-2 ring-blue-500" : ""
+              } hover:scale-105`}
             >
               <Image
                 className="w-full h-full object-cover transition-transform duration-300"

@@ -1,0 +1,72 @@
+#!/bin/bash
+
+# -----------------------------
+# Load environment variables safely from .env.local
+# -----------------------------
+if [ -f ".env.local" ]; then
+  set -a
+  grep -E '^[A-Za-z_][A-Za-z0-9_]*=.*' .env.local > .env.tmp
+  source .env.tmp
+  rm .env.tmp
+  set +a
+fi
+
+# Check if API key exists
+if [ -z "$GOOGLE_API_KEY" ]; then
+  echo "GOOGLE_API_KEY not found in .env.local"
+  exit 1
+fi
+
+# -----------------------------
+# Output folder
+# -----------------------------
+OUTPUT_DIR="public/audio"
+mkdir -p "$OUTPUT_DIR"
+
+# -----------------------------
+# Text to synthesize (default or argument)
+# -----------------------------
+TEXT="${1:-Say cheerfully: Have a wonderful day!}"
+
+# -----------------------------
+# Temporary & output files
+# -----------------------------
+RAW_FILE="$OUTPUT_DIR/output.pcm"
+WAV_FILE="$OUTPUT_DIR/output.wav"
+
+# -----------------------------
+# Call Gemini TTS API
+# -----------------------------
+echo "Generating audio for text: \"$TEXT\""
+
+curl -s "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent" \
+  -H "x-goog-api-key: $GOOGLE_API_KEY" \
+  -X POST \
+  -H "Content-Type: application/json" \
+  -d "{
+        \"contents\": [{
+          \"parts\":[{
+            \"text\": \"$TEXT\"
+          }]
+        }],
+        \"generationConfig\": {
+          \"responseModalities\": [\"AUDIO\"],
+          \"speechConfig\": {
+            \"voiceConfig\": {
+              \"prebuiltVoiceConfig\": {
+                \"voiceName\": \"Kore\"
+              }
+            }
+          }
+        },
+        \"model\": \"gemini-2.5-flash-preview-tts\"
+      }" \
+| jq -r '.candidates[0].content.parts[0].inlineData.data' \
+| base64 --decode > "$RAW_FILE"
+
+# -----------------------------
+# Convert PCM to WAV
+# -----------------------------
+ffmpeg -y -f s16le -ar 24000 -ac 1 -i "$RAW_FILE" "$WAV_FILE" >/dev/null 2>&1
+
+echo "✅ Audio saved as: $WAV_FILE"

@@ -1,17 +1,9 @@
 import { Outfit } from "next/font/google";
 import "./globals.css";
-import ThemeProvider from "./provider";
-import {
-  ClerkProvider,
-  SignInButton,
-  SignUpButton,
-  SignedIn,
-  SignedOut,
-  UserButton,
-} from '@clerk/nextjs'
 import { ThemeProvider as NextThemesProvider } from 'next-themes'
 
 import { ConvexClientProvider } from "./_providers/ConvexClientProvider";
+import { Toaster } from "@/components/ui/sonner";
 
 const outfit = Outfit({
   subsets: ['latin']
@@ -24,23 +16,22 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    // <ClerkProvider>
     <html lang="en" suppressHydrationWarning>
       <body
         className={outfit.className}
       >
         <ConvexClientProvider>
           <NextThemesProvider
-                    attribute="class"
-                    defaultTheme="system"
-                    enableSystem
-                    disableTransitionOnChange
-                >
-                    {children}
-                </NextThemesProvider>
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            {children}
+            <Toaster  position="top-center" reverseOrder={false} />
+          </NextThemesProvider>
         </ConvexClientProvider>
       </body>
     </html>
-    // </ClerkProvider>
   );
 }

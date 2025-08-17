@@ -1,0 +1,72 @@
+#!/bin/bash
+set -e -E
+
+# -----------------------------
+# Load environment variables from .env.local
+# -----------------------------
+if [ -f ".env.local" ]; then
+  set -a
+  grep -E '^[A-Za-z_][A-Za-z0-9_]*=.*' .env.local > .env.tmp
+  source .env.tmp
+  rm .env.tmp
+  set +a
+fi
+
+# Check API key
+if [ -z "$GOOGLE_API_KEY" ]; then
+  echo "GOOGLE_API_KEY not found in .env.local"
+  exit 1
+fi
+
+MODEL_ID="veo-2.0-generate-001"
+
+# -----------------------------
+# Create request JSON
+# -----------------------------
+cat << EOF > request.json
+{
+    "instances": [{
+        "prompt": "generate a video to work on the project"
+      }
+    ],
+    "parameters": {
+        "aspectRatio": "16:9",
+        "sampleCount": 1,
+        "durationSeconds": 8,
+        "personGeneration": "ALLOW_ALL"
+    }
+}
+EOF
+
+# -----------------------------
+# Send request to generate video
+# -----------------------------
+curl -s -X POST \
+  -H "Content-Type: application/json" \
+  "https://generativelanguage.googleapis.com/v1beta/models/${MODEL_ID}:predictLongRunning?key=${GOOGLE_API_KEY}" \
+  -d '@request.json' | tee result.json | grep -o '"name":"[^"]*"' | head -n1 | sed 's/"name":"//; s/"$//' > op_name
+
+op_name=$(cat op_name)
+echo "Operation name: $op_name"
+
+# -----------------------------
+# Poll for completion
+# -----------------------------
+while true; do
+  is_done=$(curl -s "https://generativelanguage.googleapis.com/v1beta/${op_name}?key=${GOOGLE_API_KEY}" | tee op_check.json | grep -o '"done":[^,}]*' | sed 's/"done"://')
+
+  if [[ "${is_done}" = "true" ]]; then
+    # Extract video URLs
+    video_count=$(grep -o '"uri":"[^"]*"' op_check.json | wc -l)
+    for (( i=0; i<video_count; i++ )); do
+      video_url=$(grep -o '"uri":"[^"]*"' op_check.json | sed 's/"uri":"//;s/"$//' | sed -n "$((i+1))p")
+      echo "Video generated: ${video_url}"
+      curl -L -s "${video_url}&key=${GOOGLE_API_KEY}" --output "video_${i}.mp4"
+      echo "Video saved as video_${i}.mp4"
+    done
+    break
+  fi
+
+  echo "Video not ready yet. Retrying in 10 seconds..."
+  sleep 10
+done

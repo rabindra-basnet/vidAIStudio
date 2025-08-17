@@ -1,7 +1,7 @@
 "use client"
 import { Button } from '@/components/ui/button'
 import React from 'react'
-import Auth from './Auth'
+import Auth from './FirebaseAuth'
 import { useAuthContext } from '../provider'
 
 

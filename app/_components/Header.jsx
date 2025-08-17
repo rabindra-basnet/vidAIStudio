@@ -2,7 +2,7 @@
 import { Button } from '@/components/ui/button'
 import Image from 'next/image'
 import React from 'react'
-import Auth from './Auth'
+import Auth from './FirebaseAuth'
 import { ModeToggle } from '@/components/toggle-theme'
 import Link from 'next/link'
 import { signOut } from 'firebase/auth'

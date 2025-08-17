@@ -1,4 +1,5 @@
 // Import the functions you need from the SDKs you need
+import { getStorage } from "@firebase/storage";
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 // TODO: Add SDKs for Firebase products that you want to use
@@ -7,7 +8,7 @@ import { getAuth } from "firebase/auth";
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-    apiKey:process.env.NEXT_PUBLIC_FIREBASE_APIKEY,
+    apiKey: process.env.NEXT_PUBLIC_FIREBASE_APIKEY,
     authDomain: "videogen-4cd6f.firebaseapp.com",
     projectId: "videogen-4cd6f",
     storageBucket: "videogen-4cd6f.firebasestorage.app",
@@ -19,3 +20,4 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
+export const storage = getStorage(app);
