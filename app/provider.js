@@ -2,7 +2,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { AuthContext } from '@/app/_context/AuthContext'
 import { onAuthStateChanged } from 'firebase/auth'
-import { auth } from '@/configs/FirebaseConifgs'
+import { auth } from '@/configs/FirebaseConfigs'
 import { useMutation } from 'convex/react'
 import { api } from '@/convex/_generated/api'
 import { useRouter } from 'next/navigation'

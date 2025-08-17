@@ -29,7 +29,7 @@ import { usePathname } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { useAuthContext } from "@/app/provider";
 import { signOut } from "firebase/auth";
-import { auth } from "@/configs/FirebaseConifgs";
+import { auth } from "@/configs/FirebaseConfigs";
 import { useRouter } from "next/navigation";
 import { VidAIStudioLogo } from "@/components/VidAIStudioLogo";
 

@@ -4,7 +4,7 @@ import { FAQSection } from "./_pagecomponent/faq-section";
 import { FeaturesSection } from "./_pagecomponent/features-section";
 import { Footer } from "./_pagecomponent/footer";
 import { GalleryShowcase } from "./_pagecomponent/gallery-showcase";
-import { Header } from "./_pagecomponent/Header";
+import { Header } from "./_pagecomponent/header";
 import { HeroSection } from "./_pagecomponent/hero-section";
 import { PricingSection } from "./_pagecomponent/pricing-section";
 import { ProcessSteps } from "./_pagecomponent/process-steps";
